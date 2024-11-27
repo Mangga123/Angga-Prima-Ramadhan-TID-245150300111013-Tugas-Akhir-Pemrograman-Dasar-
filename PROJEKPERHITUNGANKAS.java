@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 public class PROJEKPERHITUNGANKAS {
@@ -5,6 +6,7 @@ public class PROJEKPERHITUNGANKAS {
     private static int[] ks;
     private static int jml;
     private static int saldoKas = 0;
+    private static ArrayList<String> riwayatPenggunaan = new ArrayList<>();
 
     public static void main(String[] args) {
         inputJml();
@@ -34,9 +36,10 @@ public class PROJEKPERHITUNGANKAS {
                 "Hitung Persentase Kontribusi",
                 "Hitung Rata-rata Kas",
                 "Gunakan Saldo Kas",
+                "Lihat Riwayat Penggunaan Kas",
                 "Keluar/Reset"
             };
-    
+
             String op = (String) JOptionPane.showInputDialog(
                 null,
                 "Pilih opsi:",
@@ -46,9 +49,9 @@ public class PROJEKPERHITUNGANKAS {
                 options,
                 options[0]
             );
-    
+
             if (op == null) break;
-    
+
             switch (op) {
                 case "Tambah Pembayaran Kas":
                     tambahKas();
@@ -68,6 +71,9 @@ public class PROJEKPERHITUNGANKAS {
                 case "Gunakan Saldo Kas":
                     gunakanKas();
                     break;
+                case "Lihat Riwayat Penggunaan Kas":
+                    lihatRiwayat();
+                    break;
                 case "Keluar/Reset":
                     resetData();
                     return;
@@ -76,10 +82,10 @@ public class PROJEKPERHITUNGANKAS {
             }
         }
     }
-    
 
     private static void resetData() {
         saldoKas = 0;
+        riwayatPenggunaan.clear();
         JOptionPane.showMessageDialog(null, "Data telah direset.");
         main(null);
     }
@@ -106,14 +112,14 @@ public class PROJEKPERHITUNGANKAS {
     }
 
     private static void lihatKas() {
-        StringBuilder data = new StringBuilder("Total kas setiap siswa:\n");
+        String data = "Total kas setiap siswa:\n";
         for (int i = 0; i < jml; i++) {
-            data.append("Nama: ").append(ns[i]).append(", Total Kas: ").append(ks[i]).append("\n");
+            data += "Nama: " + ns[i] + ", Total Kas: " + ks[i] + "\n";
         }
-        data.append("Saldo Kas Tersisa: ").append(saldoKas);
-        JOptionPane.showMessageDialog(null, data.toString());
+        data += "Saldo Kas Tersisa: " + saldoKas;
+        JOptionPane.showMessageDialog(null, data);
     }
-
+    
     private static void cariKas() {
         int max = ks[0];
         int min = ks[0];
@@ -163,12 +169,26 @@ public class PROJEKPERHITUNGANKAS {
     private static void gunakanKas() {
         String input = JOptionPane.showInputDialog("Masukkan nominal kas yang akan digunakan:");
         int jumlah = Integer.parseInt(input);
+        String deskripsi = JOptionPane.showInputDialog("Masukkan deskripsi penggunaan kas:");
 
         if (jumlah <= saldoKas) {
             saldoKas -= jumlah;
+            riwayatPenggunaan.add("Penggunaan: " + deskripsi + ", Jumlah: " + jumlah);
             JOptionPane.showMessageDialog(null, "Penggunaan kas berhasil. Saldo kas tersisa: " + saldoKas);
         } else {
             JOptionPane.showMessageDialog(null, "Penggunaan kas gagal. Saldo kas tidak mencukupi.");
+        }
+    }
+
+    private static void lihatRiwayat() {
+        if (riwayatPenggunaan.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Tidak ada riwayat penggunaan kas.");
+        } else {
+            StringBuilder data = new StringBuilder("Riwayat Penggunaan Kas:\n");
+            for (String riwayat : riwayatPenggunaan) {
+                data.append(riwayat).append("\n");
+            }
+            JOptionPane.showMessageDialog(null, data.toString());
         }
     }
 }
